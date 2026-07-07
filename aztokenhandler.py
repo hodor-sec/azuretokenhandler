@@ -52,12 +52,12 @@ COMMON_RESOURCES = {
 
 # ====================== COMMON CLIENT IDs ======================
 COMMON_CLIENTS = {
-    "1":    {"name": "Microsoft Azure CLI",                 
-             "common_resources": f"({COMMON_RESOURCES['2']['name']} / {COMMON_RESOURCES['1']['name']} / {COMMON_RESOURCES['4']['name']} / {COMMON_RESOURCES['5']['name']} / {COMMON_RESOURCES['7']['name']} / {COMMON_RESOURCES['11']['name']})",      
-             "client_id": "04b07795-8ddb-461a-bbee-02f9e1bf7b46"},
-    "2":    {"name": "Microsoft Graph PS",                  
+    "1":    {"name": "Microsoft Graph PS",                  
              "common_resources": f"({COMMON_RESOURCES['1']['name']})",      
              "client_id": "14d82eec-204b-4c2f-b7e8-296a70dab67e"},
+    "2":    {"name": "Microsoft Azure CLI",                 
+             "common_resources": f"({COMMON_RESOURCES['2']['name']} / {COMMON_RESOURCES['1']['name']} / {COMMON_RESOURCES['4']['name']} / {COMMON_RESOURCES['5']['name']} / {COMMON_RESOURCES['7']['name']} / {COMMON_RESOURCES['11']['name']})",      
+             "client_id": "04b07795-8ddb-461a-bbee-02f9e1bf7b46"},
     "3":    {"name": "Microsoft Azure PowerShell (Legacy)",          
              "common_resources": f"({COMMON_RESOURCES['2']['name']} / {COMMON_RESOURCES['6']['name']} / {COMMON_RESOURCES['1']['name']} / {COMMON_RESOURCES['4']['name']} / {COMMON_RESOURCES['5']['name']})",      
              "client_id": "1950a258-227b-4e31-a9cf-717495945fc2"},
@@ -409,6 +409,7 @@ class Gettoken:
         return Helpers.handle_token_response(r, "Certificate")
 
 class Printing:
+    """
     # Print interactive menu for client id selection
     def print_client_menu():
         print("\n=== Common Azure Client IDs ===")
@@ -428,8 +429,46 @@ class Printing:
             )
             #print(f"  {k}. {v['name']} - {v['client_id']} - {v['common_resources']}")
         print()
+    """
 
-    # Print resource menu for resource URL selection
+    # Print interactive menu for client id selection
+    def print_client_menu():
+        print("\n=== Common Azure Client IDs ===")
+        print("Lists common Azure clients, related GUID's and commonly used resources (as supported by this script)")
+        print("\nFor a full list, please visit: \nhttps://github.com/secureworks/family-of-client-ids-research/blob/main/known-foci-clients.csv\n")
+
+        key_width = max(len(str(k)) for k in COMMON_CLIENTS)
+        name_width = max(len(v["name"]) for v in COMMON_CLIENTS.values())
+        id_width = max(len(v["client_id"]) for v in COMMON_CLIENTS.values())
+
+        # Header
+        print(
+            f"{'#':>{key_width}}  "
+            f"{'Client':<{name_width}}  "
+            f"{'Client ID':<{id_width}}  "
+            "Common resources"
+        )
+        print("-" * (key_width + name_width + id_width + 20))
+
+        indent = " " * (key_width + 2 + name_width + 2 + id_width + 2)
+
+        for k, v in COMMON_CLIENTS.items():
+            resources = [r.strip() for r in v["common_resources"].strip("()").split("/")]
+
+            # First line
+            print(
+                f"{k:>{key_width}}  "
+                f"{v['name']:<{name_width}}  "
+                f"{v['client_id']:<{id_width}}  "
+                f"{resources[0]}"
+            )
+
+            # Remaining resources
+            for resource in resources[1:]:
+                print(f"{indent}{resource}")
+        print()
+
+        # Print resource menu for resource URL selection
     def print_resource_menu():
         print("\n=== Common Azure Resource URL's ===")
 

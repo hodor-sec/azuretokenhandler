@@ -137,19 +137,35 @@ The interactive menu includes several commonly used Azure resources. A custom ap
 
 ```bash
 Lists common Azure clients, related GUID's and commonly used resources (as supported by this script)
-For a full list, please visit: https://github.com/secureworks/family-of-client-ids-research/blob/main/known-foci-clients.csv
 
-   1. Microsoft Azure CLI                   	04b07795-8ddb-461a-bbee-02f9e1bf7b46	(Azure Resource Manager / Microsoft Graph / Azure Key Vault / Azure Storage / Azure SQL Database / Azure DevOps)
-   2. Microsoft Graph PS                    	14d82eec-204b-4c2f-b7e8-296a70dab67e	(Microsoft Graph)
-   3. Microsoft Azure PowerShell (Legacy)   	1950a258-227b-4e31-a9cf-717495945fc2	(Azure Resource Manager / Azure AD Graph (Legacy) / Microsoft Graph / Azure Key Vault / Azure Storage)
-   4. Azure AD PowerShell (Even more legacy)	1b730954-1685-4b74-9bfd-dac224a7b894	(Azure AD Graph (Legacy) / Azure Resource Manager (Legacy) / Microsoft Graph)
-   5. Microsoft Office                      	d3590ed6-52b3-4102-aeff-aad2292ab01c	(Microsoft Graph)
-   6. Microsoft Teams                       	1fec8e78-bce4-4aaf-ab1b-5451cc387264	(Microsoft Graph)
-   7. Microsoft Copilot                     	14638111-3389-403d-b206-a6a71d9f8f16	(Microsoft Graph)
-   8. SharePoint Online                     	08e18876-6177-487e-b8b5-cf950c1e598c	(Microsoft Graph)
-   9. Microsoft Intune Company Portal       	9ba1a5c7-f17a-4de9-a1f1-6178c8d51223	(Microsoft Graph / Azure Resource Manager)
-  10. Microsoft Authentication Broker       	29d9ed98-a469-4536-ade2-f981bc1d605e	(Microsoft Graph)
-  99. Custom application                    	                                    	(Custom application GUID)
+For a full list, please visit:
+https://github.com/secureworks/family-of-client-ids-research/blob/main/known-foci-clients.csv
+
+ #  Client                                  Client ID                             Common resources
+------------------------------------------------------------------------------------------------
+ 1  Microsoft Graph PS                      14d82eec-204b-4c2f-b7e8-296a70dab67e  Microsoft Graph
+ 2  Microsoft Azure CLI                     04b07795-8ddb-461a-bbee-02f9e1bf7b46  Azure Resource Manager
+                                                                                  Microsoft Graph
+                                                                                  Azure Key Vault
+                                                                                  Azure Storage
+                                                                                  Azure SQL Database
+                                                                                  Azure DevOps
+ 3  Microsoft Azure PowerShell (Legacy)     1950a258-227b-4e31-a9cf-717495945fc2  Azure Resource Manager
+                                                                                  Azure AD Graph (Legacy)
+                                                                                  Microsoft Graph
+                                                                                  Azure Key Vault
+                                                                                  Azure Storage
+ 4  Azure AD PowerShell (Even more legacy)  1b730954-1685-4b74-9bfd-dac224a7b894  Azure AD Graph (Legacy)
+                                                                                  Azure Resource Manager (Legacy)
+                                                                                  Microsoft Graph
+ 5  Microsoft Office                        d3590ed6-52b3-4102-aeff-aad2292ab01c  Microsoft Graph
+ 6  Microsoft Teams                         1fec8e78-bce4-4aaf-ab1b-5451cc387264  Microsoft Graph
+ 7  Microsoft Copilot                       14638111-3389-403d-b206-a6a71d9f8f16  Microsoft Graph
+ 8  SharePoint Online                       08e18876-6177-487e-b8b5-cf950c1e598c  Microsoft Graph
+ 9  Microsoft Intune Company Portal         9ba1a5c7-f17a-4de9-a1f1-6178c8d51223  Microsoft Graph
+                                                                                  Azure Resource Manager
+10  Microsoft Authentication Broker         29d9ed98-a469-4536-ade2-f981bc1d605e  Microsoft Graph
+99  Custom application                                                            Custom application GUID
 ```
 
 ---

@@ -39,7 +39,7 @@ COMMON_RESOURCES = {
     "5":  {"name": "Azure Storage",             "resource": "https://storage.azure.com"},
     # Legacy / Azure AD
     "6":  {"name": "Azure AD Graph (Legacy)",   "resource": "https://graph.windows.net"},
-    #Azure Data Services
+    # Azure Data Services
     "7": {"name": "Azure SQL Database",         "resource": "https://database.windows.net"},
     "8": {"name": "Azure Cosmos DB",            "resource": "https://cosmos.azure.com"},
     "9": {"name": "Azure Event Hubs",           "resource": "https://eventhubs.azure.net"},
@@ -64,22 +64,25 @@ COMMON_CLIENTS = {
     "4":    {"name": "Azure AD PowerShell (Even more legacy)",   
              "common_resources": f"({COMMON_RESOURCES['6']['name']} / {COMMON_RESOURCES['3']['name']} / {COMMON_RESOURCES['1']['name']})",      
              "client_id": "1b730954-1685-4b74-9bfd-dac224a7b894"},
-    "5":    {"name": "Microsoft Office",                    
+    "5":    {"name": "Azure Portal",   
+             "common_resources": f"({COMMON_RESOURCES['2']['name']} / {COMMON_RESOURCES['3']['name']})",      
+             "client_id": "c44b4083-3bb0-49c1-b47d-974e53cbdf3c"},             
+    "6":    {"name": "Microsoft Office",                    
              "common_resources": f"({COMMON_RESOURCES['1']['name']})",      
              "client_id": "d3590ed6-52b3-4102-aeff-aad2292ab01c"},
-    "6":    {"name": "Microsoft Teams",                     
+    "7":    {"name": "Microsoft Teams",                     
              "common_resources": f"({COMMON_RESOURCES['1']['name']})",      
              "client_id": "1fec8e78-bce4-4aaf-ab1b-5451cc387264"},
-    "7":    {"name": "Microsoft Copilot",                   
+    "8":    {"name": "Microsoft Copilot",                   
              "common_resources": f"({COMMON_RESOURCES['1']['name']})",      
              "client_id": "14638111-3389-403d-b206-a6a71d9f8f16"},
-    "8":    {"name": "SharePoint Online",                   
+    "9":    {"name": "SharePoint Online",                   
              "common_resources": f"({COMMON_RESOURCES['1']['name']})",      
              "client_id": "08e18876-6177-487e-b8b5-cf950c1e598c"},
-    "9":    {"name": "Microsoft Intune Company Portal",     
+    "10":    {"name": "Microsoft Intune Company Portal",     
              "common_resources": f"({COMMON_RESOURCES['1']['name']} / {COMMON_RESOURCES['2']['name']})",      
              "client_id": "9ba1a5c7-f17a-4de9-a1f1-6178c8d51223"},
-    "10":   {"name": "Microsoft Authentication Broker",     
+    "11":   {"name": "Microsoft Authentication Broker",     
              "common_resources": f"({COMMON_RESOURCES['1']['name']})",      
              "client_id": "29d9ed98-a469-4536-ade2-f981bc1d605e"},
     "99":   {"name": "Custom application",                  
@@ -277,7 +280,14 @@ class Gettoken:
         if args.client_secret:
             payload["client_secret"] = args.client_secret
         r = requests.post(f"https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token", data=payload, headers=default_headers, proxies=proxies, verify=False)
-        return Helpers.handle_token_response(r, "Refresh")
+
+        if r.status_code == 200:
+            print(f"\n{Fore.GREEN}[+] Token acquired{Style.RESET_ALL}")
+            return Helpers.handle_token_response(r, "Refresh")   
+        else:
+            print(f"\n{Fore.RED}[!] Error acquiring token{Style.RESET_ALL}")
+            return Helpers.handle_token_response(r, "Refresh")        
+        
 
     # Device code
     def get_token_device_code(args, tenant, proxies):
@@ -302,7 +312,7 @@ class Gettoken:
             }, proxies=proxies, verify=False)
 
             if resp.status_code == 200:
-                print("\n[+] Token acquired!")
+                print("\n[+] Token acquired")
                 return Helpers.handle_token_response(resp)
             time.sleep(interval)
         print("[!] Timeout")
@@ -398,6 +408,7 @@ class Gettoken:
             "scope": f"{args.resource}/{args.scope}",
         }
 
+
         r = requests.post(
             f"https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token",
             data=payload,
@@ -406,31 +417,15 @@ class Gettoken:
             verify=False,
         )
 
-        return Helpers.handle_token_response(r, "Certificate")
+        if r.status_code == 200:
+            print(f"\n{Fore.GREEN}[+] Token acquired{Style.RESET_ALL}")
+            return Helpers.handle_token_response(r, "Certificate")   
+        else:
+            print(f"\n{Fore.RED}[!] Error acquiring token{Style.RESET_ALL}")
+            return Helpers.handle_token_response(r, "Certificate")
+
 
 class Printing:
-    """
-    # Print interactive menu for client id selection
-    def print_client_menu():
-        print("\n=== Common Azure Client IDs ===")
-        print("Lists common Azure clients, related GUID's and commonly used resources (as supported by this script)")
-        print("For a full list, please visit: https://github.com/secureworks/family-of-client-ids-research/blob/main/known-foci-clients.csv\n")
-
-        key_width = max(len(str(k)) for k in COMMON_CLIENTS)
-        name_width = max(len(v["name"]) for v in COMMON_CLIENTS.values())
-        id_width = max(len(v["client_id"]) for v in COMMON_CLIENTS.values())
-
-        for k, v in COMMON_CLIENTS.items():
-            print(
-                f"  {k:>{key_width}}. "
-                f"{v['name']:<{name_width}}\t"
-                f"{v['client_id']:<{id_width}}\t"
-                f"{v['common_resources']}"
-            )
-            #print(f"  {k}. {v['name']} - {v['client_id']} - {v['common_resources']}")
-        print()
-    """
-
     # Print interactive menu for client id selection
     def print_client_menu():
         print("\n=== Common Azure Client IDs ===")
@@ -571,7 +566,7 @@ class Helpers:
             print(f"{Fore.GREEN}[{context}] Status Code: {response.status_code}{Style.RESET_ALL}")
             print(f"{Fore.CYAN}{'='*85}{Style.RESET_ALL}")
 
-            if response.status_code == 400:
+            if response.status_code in (400, 401):
                 raise ValueError
 
             data = response.json()
